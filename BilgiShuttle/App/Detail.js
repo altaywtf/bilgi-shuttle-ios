@@ -28,7 +28,7 @@ export default class Detail extends React.Component {
 			return (
 				<View key={index} style={styles.routeBox}>
 					<Text style={styles.routeDestination}> {destination} </Text>
-					<Text style={styles.routeTime}> {nextOne == 'DONE' ? 'Done for Today!' : (route.next.ring == true ? 'Ring' : <Timer seconds={timeRemaining}/>)} </Text>
+					<Text style={styles.routeTime}> {timeRemaining ? (route.next.ring == true ? 'Ring' : <Timer seconds={timeRemaining}/>) : 'Done For Today!'} </Text>
 					<Text style={styles.routeRawData}> {rawData} </Text>
 					<Text style={styles.routeNextOne}> {nextOne == 'DONE' ? ' ' : 'NEXT: '+nextOne} </Text>
 				</View>
