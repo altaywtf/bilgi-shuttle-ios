@@ -66,21 +66,27 @@ const styles = StyleSheet.create({
     borderBottomColor: '#D50000'
   },
   routeDestination: {
-  	fontSize: 16,
-  	fontWeight: 'bold',
+  	fontSize: 20,
+  	fontWeight: '600',
   	color: '#151515',
-  	marginBottom: 15
+    marginTop: 5,
+  	marginBottom: 20
   },
   routeTime: {
-  	fontSize: 14,
+  	fontSize: 16,
+    fontWeight: '600',
   	color: '#D50000',
-  	marginBottom: 10
+  	marginBottom: 5
   },
   routeRawData: {
+    paddingLeft: 10,
+    paddingRight: 10,
   	textAlign: 'center',
-    fontSize: 10,
-    marginBottom: 10,
-    color: '#424242'
+    fontSize: 8,
+    marginTop: 15,
+    marginBottom: 15,
+    color: '#424242',
+    lineHeight: 10
   },
   routeNextOne: {
   	fontSize: 10,

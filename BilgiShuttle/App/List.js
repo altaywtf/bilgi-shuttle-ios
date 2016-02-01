@@ -103,11 +103,12 @@ const styles = StyleSheet.create({
   	alignItems: 'center',
     justifyContent: 'center',
 
+    paddingTop: 15,
     margin: 10,
     width: (deviceWidth/2)-30,
     height: 130,
-    backgroundColor: '#F6F6F6',
 
+    backgroundColor: '#F6F6F6',
     borderWidth: 2,
     borderRadius: 2,
     borderColor: '#DDD',
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     height: (deviceWidth/4)-40,
   },
   nodeTitle: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
     marginTop: 15,
     color: '#151515'

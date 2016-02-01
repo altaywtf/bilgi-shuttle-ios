@@ -23,11 +23,13 @@ $ npm install
 
 ##Usage
 ```bash
+# Note that bilgi-shuttle-api should be running at the same time with this app to get shuttle data.
 
-Note that bilgi-shuttle-api should be running at the same time with this app to get shuttle data.
-
+# Launching the app
 Open 'BilgiShuttle/ios/BilgiShuttle.xcodeproj' file in XCode, then run iOS simulator.
-On iOS shake the device or press control + ⌘ + z in the simulator. 
+
+# Development
+On iOS, shake the device or press [control + ⌘ + z] in the simulator. 
 Then enable live reload from developer menu.
 
 Main file is 'BilgiShuttle/index.ios.js' and the components are inside 'App' folder.
