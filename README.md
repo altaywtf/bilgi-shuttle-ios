@@ -36,11 +36,11 @@ Main file is 'BilgiShuttle/index.ios.js' and the components are inside 'App' fol
 ```
 
 ##Screenshots
-<img src="Screenshots/bs_ios_1.png" width="19%">
-<img src="Screenshots/bs_ios_2.png" width="19%">
-<img src="Screenshots/bs_ios_3.png" width="19%">
-<img src="Screenshots/bs_ios_4.png" width="19%">
-<img src="Screenshots/bs_ios_5.png" width="19%">
+<img src="Screenshots/bs_ios_01.png" width="19%">
+<img src="Screenshots/bs_ios_02.png" width="19%">
+<img src="Screenshots/bs_ios_03.png" width="19%">
+<img src="Screenshots/bs_ios_04.png" width="19%">
+<img src="Screenshots/bs_ios_05.png" width="19%">
 
 ##License
 
