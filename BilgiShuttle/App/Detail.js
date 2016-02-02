@@ -23,12 +23,12 @@ export default class Detail extends React.Component {
 			const destination = route.destination;
 			const rawData = route.raw_data;
 			const nextOne = route.next.next_next_one;
-			let timeRemaining = route.next.in_secs;
+			const timeRemaining = route.next.in_secs;
 
 			return (
 				<View key={index} style={styles.routeBox}>
 					<Text style={styles.routeDestination}> {destination} </Text>
-					<Text style={styles.routeTime}> {timeRemaining ? (route.next.ring == true ? 'Ring' : <Timer seconds={timeRemaining}/>) : 'Done For Today!'} </Text>
+					<Text style={styles.routeTime}> {timeRemaining ? (route.next.ring == true ? 'Ring' : <Timer seconds={timeRemaining} nextOne={nextOne}/>) : 'Done For Today!'} </Text>
 					<Text style={styles.routeRawData}> {rawData} </Text>
 					<Text style={styles.routeNextOne}> {nextOne == 'DONE' ? ' ' : 'NEXT: '+nextOne} </Text>
 				</View>
