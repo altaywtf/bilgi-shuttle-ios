@@ -12,25 +12,93 @@ export default class Detail extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			routes: this.props.routes,
-			start_node: this.props.start_node,
+      nodes: this.props.data.nodes,
+			routes: this.props.data.routes.filter((route) => route.start == this.props.nodeID),
 		}
 	}
 
+  getNextValues(start, destination) {
+    const routes = this.state.routes;
+    
+    // initial state
+    const next = {
+      ring: false,
+      in_secs: '',
+      next_next_one: ''
+    };
+    
+    // DISPOSABLE VARIABLES
+    const currentTime = new Date();
+    const routeRequested = routes.filter((route) => (route.start==start && route.destination==destination))[0];  
+    
+    const routeRawData = routeRequested.raw_data.split(' - ');
+    const routeTimes = [];
+   
+    // transforming raw data to time format
+    routeRawData.map((time) => {
+      if(time == 'Ring'){
+        routeTimes.push(time);
+      } else {
+        let d = new Date();
+        let t = time.split(':');
+        d.setHours(t[0], t[1], 0);
+        routeTimes.push(d);
+      }
+    });
+    
+    // ring check  
+    routeTimes.map((time, index) => {
+      if(time == 'Ring' && routeTimes[index-1]){
+        if(routeTimes[index-1] < currentTime && routeTimes[index+1]>currentTime) {
+          next.ring = true;
+        }         
+      }
+    });
+    
+    // find next shuttles --will be used in next steps--
+    const nextShuttles = routeTimes.filter((time) => time > currentTime);
+      
+    // set next.in_secs
+    if(nextShuttles[0]) {
+      next.in_secs = (nextShuttles[0]-currentTime) / 1000;
+    } else {
+      next.in_secs = 'Done For Today!';
+    }
+    
+    // set next.next_next_one
+    if(next.ring == true){
+      next.next_next_one = nextShuttles[0].getHours()+':'+(nextShuttles[0].getMinutes() === 0 ? '00' : nextShuttles[0].getMinutes());
+    } else {
+        if(nextShuttles[1]) {
+          next.next_next_one = nextShuttles[1].getHours()+':'+(nextShuttles[1].getMinutes() === 0 ? '00' : nextShuttles[1].getMinutes());
+        } else {
+          next.next_next_one = 'Done!';
+        }
+    }
+    return next;
+  };
+
 	render() {
 		const routeList = this.state.routes.map((route, index) => {
-
-			const destination = route.destination;
-			const rawData = route.raw_data;
-			const nextOne = route.next.next_next_one;
-			const timeRemaining = route.next.in_secs;
-
+      
+      const start = route.start;
+      const destination = route.destination;
+      const destinationName = this.state.nodes.filter((node) => node.id == destination)[0].name;
+      
+      // preparing 'NEXT' values for rendering
+      const nextValues = this.getNextValues(start, destination);
+      //
+      const timeRemaining = nextValues.in_secs;
+      const isRing = nextValues.ring;
+      const nextOne = nextValues.next_next_one;
+      const rawData = route.raw_data;
+      
 			return (
 				<View key={index} style={styles.routeBox}>
-					<Text style={styles.routeDestination}> {destination} </Text>
-					<Text style={styles.routeTime}> {timeRemaining ? (route.next.ring == true ? 'Ring' : <Timer seconds={timeRemaining} nextOne={nextOne}/>) : 'Done For Today!'} </Text>
+					<Text style={styles.routeDestination}> {destinationName} </Text>
+					<Text style={styles.routeTime}> {isRing == 'Ring' ? 'Ring' : (timeRemaining == 'Done For Today!' ? 'Done For Today!' : <Timer seconds={timeRemaining} nextOne={nextOne}/>)} </Text>
 					<Text style={styles.routeRawData}> {rawData} </Text>
-					<Text style={styles.routeNextOne}> {nextOne == 'DONE' ? ' ' : 'NEXT: '+nextOne} </Text>
+					<Text style={styles.routeNextOne}> {nextOne == 'Done!' ? ' ' : 'NEXT: '+nextOne} </Text>
 				</View>
 			)
 		})
@@ -66,14 +134,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#D50000'
   },
   routeDestination: {
-  	fontSize: 20,
+  	fontSize: 22,
   	fontWeight: '600',
   	color: '#151515',
     marginTop: 5,
   	marginBottom: 20
   },
   routeTime: {
-  	fontSize: 16,
+  	fontSize: 18,
     fontWeight: '600',
   	color: '#D50000',
   	marginBottom: 5
@@ -82,11 +150,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   	textAlign: 'center',
-    fontSize: 8,
+    fontSize: 12,
     marginTop: 15,
     marginBottom: 15,
     color: '#424242',
-    lineHeight: 10
+    lineHeight: 14
   },
   routeNextOne: {
   	fontSize: 10,
