@@ -1,8 +1,14 @@
-import React, {Text} from 'react-native';
+import React, {Text, AppStateIOS} from 'react-native';
 
 var Timer = React.createClass({
   getInitialState: function() {
-    return {timeRemaining: this.props.seconds, timeDisplay: 'Loading'};
+    return {
+      timeRemaining: this.props.seconds, 
+      timeDisplay: 'Loading',
+      currentAppState: AppStateIOS.currentState,
+      sleepTime: '',
+      wakeUpTime: ''
+    };
   },
   
   tick: function() {
@@ -21,7 +27,7 @@ var Timer = React.createClass({
 
     this.setState({timeDisplay: hours + minutes + ':' + seconds});
 
-    if (this.state.timeRemaining == 0) {
+    if (this.state.timeRemaining <= 0) {
       let c = new Date();
       let d = new Date();
 
@@ -38,10 +44,36 @@ var Timer = React.createClass({
   
   componentDidMount: function() {
     this.interval = setInterval(this.tick, 1000);
+    AppStateIOS.addEventListener('change', this._handleAppStateChange);
   },
   
   componentWillUnmount: function() {
     clearInterval(this.interval);
+    AppStateIOS.removeEventListener('change', this._handleAppStateChange);
+  },
+
+  _handleAppStateChange: function(currentAppState) {
+    this.setState({ currentAppState });
+    
+    if(this.state.currentAppState == 'background') {
+      this.setState({sleepTime: new Date()});
+    } else if (this.state.currentAppState == 'active') {
+      this.setState({wakeUpTime: new Date()});
+      let sleepWakeUpDiff = parseInt((this.state.wakeUpTime-this.state.sleepTime)/1000);
+      let timeRemainingAtSleep = this.state.timeRemaining;
+      if(sleepWakeUpDiff <= timeRemainingAtSleep){
+        this.setState({timeRemaining: timeRemainingAtSleep - sleepWakeUpDiff});
+      } else {
+        let c = new Date();
+        let d = new Date();
+        let nt1 = this.props.nextOne.split(':')[0];
+        let nt2 = this.props.nextOne.split(':')[1];
+        d.setHours(nt1, nt2, 0);
+        let newTimeDiff = ((d-c) / 1000);
+        this.setState({timeRemaining: newTimeDiff});
+      }
+    }
+
   },
   
   render: function() {

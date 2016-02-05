@@ -19,8 +19,6 @@ export default class Detail extends React.Component {
 
   getNextValues(start, destination) {
     const routes = this.state.routes;
-    
-    // initial state
     const next = {
       ring: false,
       in_secs: '',
@@ -86,19 +84,19 @@ export default class Detail extends React.Component {
       const destinationName = this.state.nodes.filter((node) => node.id == destination)[0].name;
       
       // preparing 'NEXT' values for rendering
-      const nextValues = this.getNextValues(start, destination);
-      //
-      const timeRemaining = nextValues.in_secs;
-      const isRing = nextValues.ring;
-      const nextOne = nextValues.next_next_one;
-      const rawData = route.raw_data;
+      let nextValues = this.getNextValues(start, destination);
+      
+      let timeRemaining = nextValues.in_secs;
+      let isRing = nextValues.ring;
+      let nextOne = nextValues.next_next_one;
+      let rawData = route.raw_data;
       
 			return (
 				<View key={index} style={styles.routeBox}>
 					<Text style={styles.routeDestination}> {destinationName} </Text>
-					<Text style={styles.routeTime}> {isRing == 'Ring' ? 'Ring' : (timeRemaining == 'Done For Today!' ? 'Done For Today!' : <Timer seconds={timeRemaining} nextOne={nextOne}/>)} </Text>
+					<Text style={styles.routeTime}> {isRing ? 'Ring' : (timeRemaining == 'Done For Today!' ? 'Done For Today!' : <Timer seconds={timeRemaining} nextOne={nextOne}/>)} </Text>
 					<Text style={styles.routeRawData}> {rawData} </Text>
-					<Text style={styles.routeNextOne}> {nextOne == 'Done!' ? ' ' : 'NEXT: '+nextOne} </Text>
+					<Text style={styles.routeNextOne}> {nextOne == 'Done!' ? ' ' : 'Next One: '+nextOne} </Text>
 				</View>
 			)
 		})
@@ -157,7 +155,8 @@ const styles = StyleSheet.create({
     lineHeight: 14
   },
   routeNextOne: {
-  	fontSize: 10,
+  	fontSize: 12,
+    fontWeight: '600',
   	color: '#151515'
   }
 });

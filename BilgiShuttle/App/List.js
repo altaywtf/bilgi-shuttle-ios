@@ -10,7 +10,6 @@ import React, {
 } from 'react-native';
 
 import Detail from './Detail';
-import slugify from './Utils/Slugify';
 
 // Device Width for Responsive Units
 import Dimensions from 'Dimensions';
