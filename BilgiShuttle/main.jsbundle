@@ -59421,8 +59421,7 @@ return ReactMount.getNodeFromInstance(componentOrElement);}
 
 module.exports=findDOMNode;
 });
-__d('BilgiShuttle/App/List.js',function(global, require, module, exports) {  Object.defineProperty(exports,"__esModule",{value:true});var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var _Detail=require('BilgiShuttle/App/Detail.js');var _Detail2=babelHelpers.interopRequireDefault(_Detail);var _Slugify=require('BilgiShuttle/App/Utils/Slugify.js');var _Slugify2=babelHelpers.interopRequireDefault(_Slugify);var _Dimensions=require('Dimensions');var _Dimensions2=babelHelpers.interopRequireDefault(_Dimensions);
-
+__d('BilgiShuttle/App/List.js',function(global, require, module, exports) {  Object.defineProperty(exports,"__esModule",{value:true});var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var _Detail=require('BilgiShuttle/App/Detail.js');var _Detail2=babelHelpers.interopRequireDefault(_Detail);var _Dimensions=require('Dimensions');var _Dimensions2=babelHelpers.interopRequireDefault(_Dimensions);
 
 
 
@@ -59678,8 +59677,6 @@ routes:_this.props.data.routes.filter(function(route){return route.start==_this.
 
 start,destination){
 var routes=this.state.routes;
-
-
 var next={
 ring:false,
 in_secs:'',
@@ -59755,9 +59752,9 @@ var rawData=route.raw_data;
 return (
 _reactNative2.default.createElement(_reactNative.View,{key:index,style:styles.routeBox},
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.routeDestination},' ',destinationName,' '),
-_reactNative2.default.createElement(_reactNative.Text,{style:styles.routeTime},' ',isRing=='Ring'?'Ring':timeRemaining=='Done For Today!'?'Done For Today!':_reactNative2.default.createElement(_Timer2.default,{seconds:timeRemaining,nextOne:nextOne}),' '),
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.routeTime},' ',isRing?'Ring':timeRemaining=='Done For Today!'?'Done For Today!':_reactNative2.default.createElement(_Timer2.default,{seconds:timeRemaining,nextOne:nextOne}),' '),
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.routeRawData},' ',rawData,' '),
-_reactNative2.default.createElement(_reactNative.Text,{style:styles.routeNextOne},' ',nextOne=='Done!'?' ':'NEXT: '+nextOne,' ')));});
+_reactNative2.default.createElement(_reactNative.Text,{style:styles.routeNextOne},' ',nextOne=='Done!'?' ':'Next One: '+nextOne,' ')));});
 
 
 
@@ -59816,18 +59813,29 @@ color:'#424242',
 lineHeight:14},
 
 routeNextOne:{
-fontSize:10,
+fontSize:12,
+fontWeight:'600',
 color:'#151515'}});
 });
 __d('BilgiShuttle/App/Utils/Timer.js',function(global, require, module, exports) {  Object.defineProperty(exports,"__esModule",{value:true});var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);
 
 var Timer=_reactNative2.default.createClass({displayName:'Timer',
 getInitialState:function(){
-return {timeRemaining:this.props.seconds,timeDisplay:'Loading'};},
+return {
+timeRemaining:this.props.seconds,
+timeDisplay:'Loading',
+currentAppState:_reactNative.AppStateIOS.currentState,
+sleepTime:'',
+wakeUpTime:''};},
+
 
 
 tick:function(){
+if(this.state.timeRemaining=='Done For Today!'){
+this.setState({timeDisplay:'Done For Today!'});}else 
+{
 this.setState({timeRemaining:this.state.timeRemaining-1});
+
 var timer=this.state.timeRemaining;
 
 var hours=parseInt(timer/3600,10);
@@ -59840,29 +59848,67 @@ hours=hours==0?'':hours+':';
 minutes=minutes<10?'0'+minutes:minutes;
 seconds=seconds<10?'0'+seconds:seconds;
 
-this.setState({timeDisplay:hours+minutes+':'+seconds});
+this.setState({timeDisplay:hours+minutes+':'+seconds});}
 
-if(this.state.timeRemaining==0){
+
+if(this.state.timeRemaining<=0){
+if(this.props.nextOne=='Done!'){
+this.setState({timeRemaining:'Done For Today!'});}else 
+{
 var c=new Date();
 var d=new Date();
-
 var nt1=this.props.nextOne.split(':')[0];
 var nt2=this.props.nextOne.split(':')[1];
-
 d.setHours(nt1,nt2,0);
-
 var newTimeDiff=(d-c)/1000;
+this.setState({timeRemaining:newTimeDiff});}}},
 
-this.setState({timeRemaining:newTimeDiff});}},
 
 
 
 componentDidMount:function(){
-this.interval=setInterval(this.tick,1000);},
+
+this.interval=setInterval(this.tick,1000);
+
+_reactNative.AppStateIOS.addEventListener('change',this._handleAppStateChange);},
 
 
 componentWillUnmount:function(){
-clearInterval(this.interval);},
+
+clearInterval(this.interval);
+
+_reactNative.AppStateIOS.removeEventListener('change',this._handleAppStateChange);},
+
+
+_handleAppStateChange:function(currentAppState){
+
+this.setState({currentAppState:currentAppState});
+
+if(this.state.currentAppState=='background'){
+
+this.setState({sleepTime:new Date()});}else 
+if(this.state.currentAppState=='active'){
+
+this.setState({wakeUpTime:new Date()});
+
+var sleepWakeUpDiff=parseInt((this.state.wakeUpTime-this.state.sleepTime)/1000);
+
+if(sleepWakeUpDiff<=this.state.timeRemaining){
+this.setState({timeRemaining:this.state.timeRemaining-sleepWakeUpDiff});}else 
+{
+if(this.props.nextOne=='Done!'){
+this.setState({timeRemaining:'Done For Today!'});}else 
+{
+var c=new Date();
+var d=new Date();
+var nt1=this.props.nextOne.split(':')[0];
+var nt2=this.props.nextOne.split(':')[1];
+d.setHours(nt1,nt2,0);
+var newTimeDiff=(d-c)/1000;
+this.setState({timeRemaining:newTimeDiff});}}}},
+
+
+
 
 
 render:function(){
@@ -59873,24 +59919,6 @@ _reactNative2.default.createElement(_reactNative.Text,null,this.state.timeDispla
 
 
 Timer;
-});
-__d('BilgiShuttle/App/Utils/Slugify.js',function(global, require, module, exports) {  'use strict';Object.defineProperty(exports,"__esModule",{value:true});
-
-var slugify=function(text){
-
-var trMap={'çÇ':'c','ğĞ':'g','şŞ':'s','üÜ':'u','ıİ':'i','öÖ':'o'};
-
-for(var key in trMap){
-text=text.replace(new RegExp('['+key+']','g'),trMap[key]);}
-
-
-return text.replace(/[^-a-zA-Z0-9\s]+/ig,'').
-replace(/\s/gi,'-').
-replace(/[-]+/gi,'-').
-toLowerCase();};exports.default=
-
-
-slugify;
 });
 ;require("InitializeJavaScriptAppEngine");
 ;require("BilgiShuttle/index.ios.js");
