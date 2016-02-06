@@ -69,6 +69,8 @@ var Timer = React.createClass({
       // set a sleep time so we know when app went sleep
       this.setState({sleepTime: new Date()});
     } else if (this.state.currentAppState == 'active') {
+      // set timedisplay to loading (a little space for calculation)
+      this.setState({timeDisplay: 'Loading'});
       // set wakeuptime so we can compare it with sleep time
       this.setState({wakeUpTime: new Date()});
       // calculating time elapsed between sleep and wakeup
