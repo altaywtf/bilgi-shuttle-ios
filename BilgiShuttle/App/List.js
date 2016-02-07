@@ -6,7 +6,8 @@ import React, {
 	StyleSheet,
 	TouchableHighlight,
 	AsyncStorage,
-  AlertIOS
+  AlertIOS,
+  ActivityIndicatorIOS
 } from 'react-native';
 
 import Detail from './Detail';
@@ -27,6 +28,7 @@ export default class List extends React.Component {
 	constructor(props) {
 		super(props);
     this.state = {
+      loaded: false,
       dbVersion: {
       },
       data: {
@@ -91,7 +93,7 @@ export default class List extends React.Component {
           this.setState({dbVersion: res.database_version});
           AsyncStorage.getItem(data_KEY).then((value) => {
             const readData = JSON.parse(value);
-            this.setState({data: {nodes: readData.nodes, routes: readData.routes}});
+            this.setState({data: {nodes: readData.nodes, routes: readData.routes}, loaded: true});
           });
         }
       })
@@ -99,7 +101,7 @@ export default class List extends React.Component {
         AlertIOS.alert('Warning!', 'You have no internet connection, cached DB will be used to display data!');
         AsyncStorage.getItem(data_KEY).then((value) => {
             const readData = JSON.parse(value);
-            this.setState({data: {nodes: readData.nodes, routes: readData.routes}});
+            this.setState({data: {nodes: readData.nodes, routes: readData.routes}, loaded: true});
         });
       })
       .done();
@@ -129,7 +131,7 @@ export default class List extends React.Component {
     fetch(baseURL+'/database_fetch_all.json')
       .then((res) => res.json())
       .then((res) => {
-        this.setState({data: {nodes: res.nodes, routes: res.routes}});
+        this.setState({data: {nodes: res.nodes, routes: res.routes}, loaded: true});
         AsyncStorage.setItem(data_KEY, JSON.stringify(this.state.data));
         AsyncStorage.getItem(data_KEY).then((value) => {
           console.log('Data updated to: ', value);
@@ -175,7 +177,7 @@ export default class List extends React.Component {
 
 		return (
 			<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-			 {nodeList}
+			 {this.state.loaded ? nodeList : <ActivityIndicatorIOS style={styles.activityIndicator} color='#151515' size='large'/>}
 			</ScrollView>
 		);
 	}
@@ -197,6 +199,10 @@ const styles = StyleSheet.create({
     marginTop: 5,
 
     backgroundColor: '#F0F0F0'
+  },
+
+  activityIndicator: {
+    marginTop: 100
   },
 
   nodeBoxContainer: {

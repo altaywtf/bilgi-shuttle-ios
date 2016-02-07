@@ -59436,6 +59436,7 @@ __d('BilgiShuttle/App/List.js',function(global, require, module, exports) {  Obj
 
 
 
+
 var deviceWidth=_Dimensions2.default.get('window').width;
 
 
@@ -59450,6 +59451,7 @@ List=function(_React$Component){babelHelpers.inherits(List,_React$Component);
 function List(props){babelHelpers.classCallCheck(this,List);var _this=babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(List).call(this,
 props));
 _this.state={
+loaded:false,
 dbVersion:{},
 
 data:{
@@ -59514,7 +59516,7 @@ console.log('DB UP TO DATE!');
 _this3.setState({dbVersion:res.database_version});
 _reactNative.AsyncStorage.getItem(data_KEY).then(function(value){
 var readData=JSON.parse(value);
-_this3.setState({data:{nodes:readData.nodes,routes:readData.routes}});});}}).
+_this3.setState({data:{nodes:readData.nodes,routes:readData.routes},loaded:true});});}}).
 
 
 
@@ -59522,7 +59524,7 @@ catch(function(error){
 _reactNative.AlertIOS.alert('Warning!','You have no internet connection, cached DB will be used to display data!');
 _reactNative.AsyncStorage.getItem(data_KEY).then(function(value){
 var readData=JSON.parse(value);
-_this3.setState({data:{nodes:readData.nodes,routes:readData.routes}});});}).
+_this3.setState({data:{nodes:readData.nodes,routes:readData.routes},loaded:true});});}).
 
 
 done();}},{key:'updateDatabaseVersion',value:function updateDatabaseVersion(
@@ -59552,7 +59554,7 @@ done();}},{key:'updateData',value:function updateData()
 fetch(baseURL+'/database_fetch_all.json').
 then(function(res){return res.json();}).
 then(function(res){
-_this5.setState({data:{nodes:res.nodes,routes:res.routes}});
+_this5.setState({data:{nodes:res.nodes,routes:res.routes},loaded:true});
 _reactNative.AsyncStorage.setItem(data_KEY,JSON.stringify(_this5.state.data));
 _reactNative.AsyncStorage.getItem(data_KEY).then(function(value){
 console.log('Data updated to: ',value);});}).
@@ -59598,7 +59600,7 @@ _reactNative2.default.createElement(_reactNative.Text,{style:styles.nodeTitle},n
 
 return (
 _reactNative2.default.createElement(_reactNative.ScrollView,{style:styles.container,contentContainerStyle:styles.contentContainer},
-nodeList));}}]);return List;}(_reactNative2.default.Component);exports.default=List;
+this.state.loaded?nodeList:_reactNative2.default.createElement(_reactNative.ActivityIndicatorIOS,{style:styles.activityIndicator,color:'#151515',size:'large'})));}}]);return List;}(_reactNative2.default.Component);exports.default=List;
 
 
 
@@ -59620,6 +59622,10 @@ alignItems:'center',
 marginTop:5,
 
 backgroundColor:'#F0F0F0'},
+
+
+activityIndicator:{
+marginTop:100},
 
 
 nodeBoxContainer:{
@@ -59853,7 +59859,7 @@ this.setState({timeDisplay:hours+minutes+':'+seconds});}
 
 if(this.state.timeRemaining<=0){
 if(this.props.nextOne=='Done!'){
-this.setState({timeRemaining:'Done For Today!'});}else 
+this.setState({timeRemaining:'Done For Today!',timeDisplay:'Done For Today!'});}else 
 {
 var c=new Date();
 var d=new Date();
@@ -59861,8 +59867,10 @@ var nt1=this.props.nextOne.split(':')[0];
 var nt2=this.props.nextOne.split(':')[1];
 d.setHours(nt1,nt2,0);
 var newTimeDiff=(d-c)/1000;
-this.setState({timeRemaining:newTimeDiff});}}},
+this.setState({timeRemaining:newTimeDiff});}}else 
 
+if(this.state.timeRemaining>3600&&this.state.timeRemaining<7200){
+this.setState({timeDisplay:'Ring'});}},
 
 
 
@@ -59889,6 +59897,8 @@ if(this.state.currentAppState=='background'){
 this.setState({sleepTime:new Date()});}else 
 if(this.state.currentAppState=='active'){
 
+this.setState({timeDisplay:'Loading'});
+
 this.setState({wakeUpTime:new Date()});
 
 var sleepWakeUpDiff=parseInt((this.state.wakeUpTime-this.state.sleepTime)/1000);
@@ -59897,7 +59907,7 @@ if(sleepWakeUpDiff<=this.state.timeRemaining){
 this.setState({timeRemaining:this.state.timeRemaining-sleepWakeUpDiff});}else 
 {
 if(this.props.nextOne=='Done!'){
-this.setState({timeRemaining:'Done For Today!'});}else 
+this.setState({timeRemaining:'Done For Today!',timeDisplay:'Done For Today!'});}else 
 {
 var c=new Date();
 var d=new Date();

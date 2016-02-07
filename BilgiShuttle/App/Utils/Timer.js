@@ -34,7 +34,7 @@ var Timer = React.createClass({
 
     if (this.state.timeRemaining <= 0) {
       if(this.props.nextOne == 'Done!') {
-        this.setState({timeRemaining: 'Done For Today!'});
+        this.setState({timeRemaining: 'Done For Today!', timeDisplay: 'Done For Today!'});
       } else {
         let c = new Date();
         let d = new Date();
@@ -44,6 +44,8 @@ var Timer = React.createClass({
         let newTimeDiff = (d-c) / 1000;
         this.setState({timeRemaining: newTimeDiff});
       }
+    } else if (this.state.timeRemaining > 3600 && this.state.timeRemaining < 7200) { // THIS IS NOT A GOOD WAY!
+      this.setState({timeDisplay: 'Ring'});
     }
   },
   
@@ -80,7 +82,7 @@ var Timer = React.createClass({
         this.setState({timeRemaining: this.state.timeRemaining - sleepWakeUpDiff});
       } else { // skipped to the next
         if(this.props.nextOne == 'Done!') {
-        this.setState({timeRemaining: 'Done For Today!'});
+          this.setState({timeRemaining: 'Done For Today!', timeDisplay: 'Done For Today!'});
         } else {
           let c = new Date();
           let d = new Date();
