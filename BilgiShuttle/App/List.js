@@ -54,6 +54,7 @@ export default class List extends React.Component {
         console.log('Current database version: ', value);
         AsyncStorage.getItem(data_KEY).then((value) => {
           console.log('Current Database: ', JSON.parse(value));
+          // AlertIOS.alert('Current Database: ', JSON.parse(value));
         });
 
         // message
@@ -69,6 +70,7 @@ export default class List extends React.Component {
         console.log('Current database version: ', value);
         AsyncStorage.getItem(data_KEY).then((value) => {
           console.log('Current Data: ', JSON.parse(value));
+          // AlertIOS.alert('Current Data: ', value);
         });
 
         // check database version
@@ -79,7 +81,7 @@ export default class List extends React.Component {
   }
 
   checkDatabaseVersion(currentDatabaseVersion) {
-    fetch(baseURL+'/database_check.json')
+    fetch(baseURL+'/database_check.json', {headers: {'Cache-Control': 'no-cache'}})
       .then((res) => res.json())
       .then((res) => {
         // if current db is older
@@ -108,13 +110,14 @@ export default class List extends React.Component {
   }
 
   updateDatabaseVersion(currentDatabaseVersion) {
-    fetch(baseURL+'/database_check.json')
+    fetch(baseURL+'/database_check.json', {headers: {'Cache-Control': 'no-cache'}})
       .then((res) => res.json())
       .then((res) => {
         this.setState({dbVersion: res.database_version});
         AsyncStorage.setItem(dbVersion_KEY, this.state.dbVersion.version_number.toString());
         AsyncStorage.getItem(dbVersion_KEY).then((value) => {
           console.log('Database updated to version: ', value);
+          // AlertIOS.alert('Database updated to version: ', value);
         });
       })
       .catch((error) => {
@@ -128,7 +131,7 @@ export default class List extends React.Component {
   }
 
   updateData() {
-    fetch(baseURL+'/database_fetch_all.json')
+    fetch(baseURL+'/database_fetch_all.json', {headers: {'Cache-Control': 'no-cache'}})
       .then((res) => res.json())
       .then((res) => {
         this.setState({data: {nodes: res.nodes, routes: res.routes}, loaded: true});

@@ -59480,6 +59480,7 @@ console.log('Current Database: ',JSON.parse(value));});
 
 
 
+
 console.log('There is no DB!!! Getting it...');
 
 
@@ -59495,6 +59496,7 @@ console.log('Current Data: ',JSON.parse(value));});
 
 
 
+
 console.log('Checking Database Version');
 _this2.checkDatabaseVersion(value);}});}},{key:'checkDatabaseVersion',value:function checkDatabaseVersion(
 
@@ -59502,7 +59504,7 @@ _this2.checkDatabaseVersion(value);}});}},{key:'checkDatabaseVersion',value:func
 
 
 currentDatabaseVersion){var _this3=this;
-fetch(baseURL+'/database_check.json').
+fetch(baseURL+'/database_check.json',{headers:{'Cache-Control':'no-cache'}}).
 then(function(res){return res.json();}).
 then(function(res){
 
@@ -59531,13 +59533,14 @@ done();}},{key:'updateDatabaseVersion',value:function updateDatabaseVersion(
 
 
 currentDatabaseVersion){var _this4=this;
-fetch(baseURL+'/database_check.json').
+fetch(baseURL+'/database_check.json',{headers:{'Cache-Control':'no-cache'}}).
 then(function(res){return res.json();}).
 then(function(res){
 _this4.setState({dbVersion:res.database_version});
 _reactNative.AsyncStorage.setItem(dbVersion_KEY,_this4.state.dbVersion.version_number.toString());
 _reactNative.AsyncStorage.getItem(dbVersion_KEY).then(function(value){
 console.log('Database updated to version: ',value);});}).
+
 
 
 catch(function(error){
@@ -59551,7 +59554,7 @@ done();}},{key:'updateData',value:function updateData()
 
 
 {var _this5=this;
-fetch(baseURL+'/database_fetch_all.json').
+fetch(baseURL+'/database_fetch_all.json',{headers:{'Cache-Control':'no-cache'}}).
 then(function(res){return res.json();}).
 then(function(res){
 _this5.setState({data:{nodes:res.nodes,routes:res.routes},loaded:true});
