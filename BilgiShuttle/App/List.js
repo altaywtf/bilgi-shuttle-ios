@@ -7,7 +7,8 @@ import React, {
 	TouchableHighlight,
 	AsyncStorage,
   AlertIOS,
-  ActivityIndicatorIOS
+  ActivityIndicatorIOS,
+  AppStateIOS
 } from 'react-native';
 
 import Detail from './Detail';

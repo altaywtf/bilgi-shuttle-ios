@@ -3,10 +3,12 @@ import React, {
 	Text,
 	StyleSheet,
 	ScrollView,
-	TouchableHighlight
+	TouchableHighlight,
+  AppStateIOS
 } from 'react-native';
 
 import Timer from './Utils/Timer';
+import List from './List';
 
 export default class Detail extends React.Component {
 	constructor(props) {
@@ -14,8 +16,21 @@ export default class Detail extends React.Component {
 		this.state = {
       nodes: this.props.data.nodes,
 			routes: this.props.data.routes.filter((route) => route.start == this.props.nodeID),
+      currentAppState: AppStateIOS.currentAppState
 		}
 	}
+
+  componentDidMount() {
+    AppStateIOS.addEventListener('change', this._handleAppStateChange.bind(this));
+  }
+
+  componentWillUnmount() {
+    AppStateIOS.removeEventListener('change', this._handleAppStateChange.bind(this));
+  }
+
+  _handleAppStateChange(currentAppState) {
+    this.props.navigator.pop();
+  }
 
   getNextValues(start, destination) {
     const routes = this.state.routes;

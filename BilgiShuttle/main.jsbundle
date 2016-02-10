@@ -59437,6 +59437,7 @@ __d('BilgiShuttle/App/List.js',function(global, require, module, exports) {  Obj
 
 
 
+
 var deviceWidth=_Dimensions2.default.get('window').width;
 
 
@@ -59665,7 +59666,9 @@ flex:1,
 height:250,
 backgroundColor:'black'}});
 });
-__d('BilgiShuttle/App/Detail.js',function(global, require, module, exports) {  Object.defineProperty(exports,"__esModule",{value:true});var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var _Timer=require('BilgiShuttle/App/Utils/Timer.js');var _Timer2=babelHelpers.interopRequireDefault(_Timer);var 
+__d('BilgiShuttle/App/Detail.js',function(global, require, module, exports) {  Object.defineProperty(exports,"__esModule",{value:true});var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var _Timer=require('BilgiShuttle/App/Utils/Timer.js');var _Timer2=babelHelpers.interopRequireDefault(_Timer);var _List=require('BilgiShuttle/App/List.js');var _List2=babelHelpers.interopRequireDefault(_List);var 
+
+
 
 
 
@@ -59680,8 +59683,21 @@ function Detail(props){babelHelpers.classCallCheck(this,Detail);var _this=babelH
 props));
 _this.state={
 nodes:_this.props.data.nodes,
-routes:_this.props.data.routes.filter(function(route){return route.start==_this.props.nodeID;})};return _this;}babelHelpers.createClass(Detail,[{key:'getNextValues',value:function getNextValues(
+routes:_this.props.data.routes.filter(function(route){return route.start==_this.props.nodeID;}),
+currentAppState:_reactNative.AppStateIOS.currentAppState};return _this;}babelHelpers.createClass(Detail,[{key:'componentDidMount',value:function componentDidMount()
 
+
+
+{
+_reactNative.AppStateIOS.addEventListener('change',this._handleAppStateChange.bind(this));}},{key:'componentWillUnmount',value:function componentWillUnmount()
+
+
+{
+_reactNative.AppStateIOS.removeEventListener('change',this._handleAppStateChange.bind(this));}},{key:'_handleAppStateChange',value:function _handleAppStateChange(
+
+
+currentAppState){
+this.props.navigator.pop();}},{key:'getNextValues',value:function getNextValues(
 
 
 start,destination){
@@ -59833,7 +59849,7 @@ getInitialState:function(){
 return {
 timeRemaining:this.props.seconds,
 timeDisplay:'Loading',
-currentAppState:_reactNative.AppStateIOS.currentState,
+
 sleepTime:'',
 wakeUpTime:''};},
 
@@ -59879,46 +59895,47 @@ this.setState({timeDisplay:'Ring'});}},
 
 componentDidMount:function(){
 
-this.interval=setInterval(this.tick,1000);
+this.interval=setInterval(this.tick,1000);},
 
-_reactNative.AppStateIOS.addEventListener('change',this._handleAppStateChange);},
+
 
 
 componentWillUnmount:function(){
 
-clearInterval(this.interval);
-
-_reactNative.AppStateIOS.removeEventListener('change',this._handleAppStateChange);},
+clearInterval(this.interval);},
 
 
-_handleAppStateChange:function(currentAppState){
 
-this.setState({currentAppState:currentAppState});
 
-if(this.state.currentAppState=='background'){
 
-this.setState({sleepTime:new Date()});}else 
-if(this.state.currentAppState=='active'){
 
-this.setState({timeDisplay:'Loading'});
 
-this.setState({wakeUpTime:new Date()});
 
-var sleepWakeUpDiff=parseInt((this.state.wakeUpTime-this.state.sleepTime)/1000);
 
-if(sleepWakeUpDiff<=this.state.timeRemaining){
-this.setState({timeRemaining:this.state.timeRemaining-sleepWakeUpDiff});}else 
-{
-if(this.props.nextOne=='Done!'){
-this.setState({timeRemaining:'Done For Today!',timeDisplay:'Done For Today!'});}else 
-{
-var c=new Date();
-var d=new Date();
-var nt1=this.props.nextOne.split(':')[0];
-var nt2=this.props.nextOne.split(':')[1];
-d.setHours(nt1,nt2,0);
-var newTimeDiff=(d-c)/1000;
-this.setState({timeRemaining:newTimeDiff});}}}},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

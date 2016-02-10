@@ -5,7 +5,7 @@ var Timer = React.createClass({
     return {
       timeRemaining: this.props.seconds, 
       timeDisplay: 'Loading',
-      currentAppState: AppStateIOS.currentState,
+      // currentAppState: AppStateIOS.currentState,
       sleepTime: '',
       wakeUpTime: ''
     };
@@ -50,27 +50,27 @@ var Timer = React.createClass({
   },
   
   componentDidMount: function() {
-    // tick runs every secs
+    // tick runs every sec
     this.interval = setInterval(this.tick, 1000);
     // listening for appstate change
-    AppStateIOS.addEventListener('change', this._handleAppStateChange);
+    // AppStateIOS.addEventListener('change', this._handleAppStateChange);
   },
   
   componentWillUnmount: function() {
-    // tick runs every secs
+    // tick runs every sec
     clearInterval(this.interval);
     // removing event listener on appstate change
-    AppStateIOS.removeEventListener('change', this._handleAppStateChange);
+    // AppStateIOS.removeEventListener('change', this._handleAppStateChange);
   },
 
-  _handleAppStateChange: function(currentAppState) {
+  /*_handleAppStateChange: function(currentAppState) {
     // set currentAppState
     this.setState({ currentAppState });
     // app goes to sleep
-    if(this.state.currentAppState == 'background') {
+    // if(this.state.currentAppState == 'background') {
       // set a sleep time so we know when app went sleep
       this.setState({sleepTime: new Date()});
-    } else if (this.state.currentAppState == 'active') {
+    // } else if (this.state.currentAppState == 'active') {
       // set timedisplay to loading (a little space for calculation)
       this.setState({timeDisplay: 'Loading'});
       // set wakeuptime so we can compare it with sleep time
@@ -93,8 +93,9 @@ var Timer = React.createClass({
           this.setState({timeRemaining: newTimeDiff});
         }
       }
-    }
+    // }
   },
+  */
   
   render: function() {
     return (
