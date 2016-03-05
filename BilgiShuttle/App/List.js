@@ -8,7 +8,6 @@ import React, {
 	AsyncStorage,
   AlertIOS,
   ActivityIndicatorIOS,
-  AppStateIOS
 } from 'react-native';
 
 import Detail from './Detail';
@@ -18,8 +17,7 @@ import Dimensions from 'Dimensions';
 const deviceWidth = Dimensions.get('window').width;
 
 // baseURL for api calls
-//const baseURL = 'http://localhost:8000';
-const baseURL = 'http://bilgishuttle.herokuapp.com';
+const baseURL = 'http://api.bilgishuttle.com';
 
 // AsyncStorage Keys
 const dbVersion_KEY = '@BilgiShutte:dbVersion';
@@ -36,10 +34,10 @@ export default class List extends React.Component {
         nodes: [],
         routes: []
       }
-    }	
+    }
   }
 
-  // WORKING & UPDATED PART FOR ASYNCSTORAGE -------------- // 
+  // WORKING & UPDATED PART FOR ASYNCSTORAGE -------------- //
   componentDidMount() {
 
     // TESTING TESTING //
@@ -47,7 +45,7 @@ export default class List extends React.Component {
       // AsyncStorage.removeItem(data_KEY);
       // AsyncStorage.setItem(dbVersion_KEY, '0');
     // -------------- //
-     
+
     AsyncStorage.getItem(dbVersion_KEY).then((value) => {
       // if db.version is null (new installed app)
       if(!value) {
@@ -55,7 +53,6 @@ export default class List extends React.Component {
         console.log('Current database version: ', value);
         AsyncStorage.getItem(data_KEY).then((value) => {
           console.log('Current Database: ', JSON.parse(value));
-          // AlertIOS.alert('Current Database: ', JSON.parse(value));
         });
 
         // message
@@ -64,14 +61,13 @@ export default class List extends React.Component {
         // do the job!
         this.updateDatabaseVersion(value);
         this.updateData();
-      } 
+      }
       // if db.version is not null (we have a database!)
       else {
         // display current data
         console.log('Current database version: ', value);
         AsyncStorage.getItem(data_KEY).then((value) => {
           console.log('Current Data: ', JSON.parse(value));
-          // AlertIOS.alert('Current Data: ', value);
         });
 
         // check database version
@@ -90,7 +86,7 @@ export default class List extends React.Component {
             console.log('YOUR DB IS OLD!');
             console.log('Updating Database...');
             this.updateDatabaseVersion(currentDatabaseVersion);
-            this.updateData();   
+            this.updateData();
         } else {
           console.log('DB UP TO DATE!');
           this.setState({dbVersion: res.database_version});
@@ -118,7 +114,6 @@ export default class List extends React.Component {
         AsyncStorage.setItem(dbVersion_KEY, this.state.dbVersion.version_number.toString());
         AsyncStorage.getItem(dbVersion_KEY).then((value) => {
           console.log('Database updated to version: ', value);
-          // AlertIOS.alert('Database updated to version: ', value);
         });
       })
       .catch((error) => {
@@ -144,7 +139,7 @@ export default class List extends React.Component {
       .catch((error) => AlertIOS.alert(':D', 'Data update esnasında internet giderse bu olacak'))
       .done();
   }
-	
+
 	goToRoutePage(nodeName, nodeID) {
 		this.props.navigator.push({
           component: Detail,
@@ -159,7 +154,7 @@ export default class List extends React.Component {
 	// ----------------------------------------------------- //
 
 	render() {
-		const nodeList = this.state.data.nodes.map((node, index) => {			
+		const nodeList = this.state.data.nodes.map((node, index) => {
 			return (
 				<TouchableHighlight
 					key={index}
@@ -196,7 +191,7 @@ const styles = StyleSheet.create({
   contentContainer: {
   	flexDirection: 'row',
     flexWrap: 'wrap',
-    
+
     justifyContent: 'center',
     alignItems: 'center',
 

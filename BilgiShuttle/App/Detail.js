@@ -39,14 +39,14 @@ export default class Detail extends React.Component {
       in_secs: '',
       next_next_one: ''
     };
-    
+
     // DISPOSABLE VARIABLES
     const currentTime = new Date();
-    const routeRequested = routes.filter((route) => (route.start==start && route.destination==destination))[0];  
-    
+    const routeRequested = routes.filter((route) => (route.start==start && route.destination==destination))[0];
+
     const routeRawData = routeRequested.raw_data.split(' - ');
     const routeTimes = [];
-   
+
     // transforming raw data to time format
     routeRawData.map((time) => {
       if(time == 'Ring'){
@@ -58,26 +58,26 @@ export default class Detail extends React.Component {
         routeTimes.push(d);
       }
     });
-    
-    // ring check  
+
+    // ring check
     routeTimes.map((time, index) => {
       if(time == 'Ring' && routeTimes[index-1]){
         if(routeTimes[index-1] < currentTime && routeTimes[index+1]>currentTime) {
           next.ring = true;
-        }         
+        }
       }
     });
-    
+
     // find next shuttles --will be used in next steps--
     const nextShuttles = routeTimes.filter((time) => time > currentTime);
-      
+
     // set next.in_secs
     if(nextShuttles[0]) {
       next.in_secs = (nextShuttles[0]-currentTime) / 1000;
     } else {
       next.in_secs = 'Done For Today!';
     }
-    
+
     // set next.next_next_one
     if(next.ring == true){
       next.next_next_one = nextShuttles[0].getHours()+':'+(nextShuttles[0].getMinutes() === 0 ? '00' : nextShuttles[0].getMinutes());
@@ -89,23 +89,23 @@ export default class Detail extends React.Component {
         }
     }
     return next;
-  };
+  }
 
 	render() {
 		const routeList = this.state.routes.map((route, index) => {
-      
+
       const start = route.start;
       const destination = route.destination;
       const destinationName = this.state.nodes.filter((node) => node.id == destination)[0].name;
-      
+
       // preparing 'NEXT' values for rendering
       let nextValues = this.getNextValues(start, destination);
-      
+
       let timeRemaining = nextValues.in_secs;
       let isRing = nextValues.ring;
       let nextOne = nextValues.next_next_one;
       let rawData = route.raw_data;
-      
+
 			return (
 				<View key={index} style={styles.routeBox}>
 					<Text style={styles.routeDestination}> {destinationName} </Text>
