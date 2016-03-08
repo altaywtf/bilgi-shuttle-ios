@@ -2,9 +2,9 @@
 
 Basic but useful iOS application for listing the shuttle routes and times of İstanbul Bilgi University, built with [React Native](https://facebook.github.io/react-native/).
 
-The data comes from [bilgi-shuttle-api](https://github.com/mdegis/bilgi-shuttle/), processed and shown in this application.
+Data comes from [bilgi-shuttle-api](https://github.com/mdegis/bilgi-shuttle/), processed and shown in this application.
 
-There is also a web version of this app: [bilgi-shuttle-webapp](https://github.com/zebrasinpyjamas/bilgi-shuttle-webapp)
+Web version: [bilgi-shuttle-web](https://github.com/bilgishuttle/bilgi-shuttle-web)
 
 ##Installation
 ```bash
@@ -12,7 +12,7 @@ There is also a web version of this app: [bilgi-shuttle-webapp](https://github.c
 https://nodejs.org/
 
 # Clone the repository
-$ git clone https://github.com/zebrasinpyjamas/bilgi-shuttle-ios.git
+$ git clone https://github.com/bilgishuttle/bilgi-shuttle-ios.git
 
 # Go to app folder
 $ cd bilgi-shuttle-ios/BilgiShuttle
@@ -23,13 +23,11 @@ $ npm install
 
 ##Usage
 ```bash
-# Note that bilgi-shuttle-api should be running at the same time with this app to get shuttle data.
-
 # Launching the app
 Open 'BilgiShuttle/ios/BilgiShuttle.xcodeproj' file in XCode, then run iOS simulator.
 
 # Development
-On iOS, shake the device or press [control + ⌘ + z] in the simulator. 
+On iOS, shake the device or press [control + ⌘ + z] in the simulator.
 Then enable live reload from developer menu.
 
 Main file is 'BilgiShuttle/index.ios.js' and the components are inside 'App' folder.
