@@ -2,7 +2,7 @@
 
 Basic but useful iOS application for listing the shuttle routes and times of İstanbul Bilgi University, built with [React Native](https://facebook.github.io/react-native/).
 
-Data comes from [bilgi-shuttle-api](https://github.com/mdegis/bilgi-shuttle/), processed and shown in this application.
+Data comes from [bilgi-shuttle-api](https://github.com/bilgishuttle/bilgi-shuttle-api/), processed and shown in this application.
 
 Web version: [bilgi-shuttle-web](https://github.com/bilgishuttle/bilgi-shuttle-web)
 
