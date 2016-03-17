@@ -10,6 +10,10 @@ import React, {
 import Timer from './Utils/Timer';
 import List from './List';
 
+// Device Width for Responsive Units
+import Dimensions from 'Dimensions';
+const deviceWidth = Dimensions.get('window').width;
+
 export default class Detail extends React.Component {
 	constructor(props) {
 		super(props);
@@ -104,13 +108,37 @@ export default class Detail extends React.Component {
       let timeRemaining = nextValues.in_secs;
       let isRing = nextValues.ring;
       let nextOne = nextValues.next_next_one;
+
+			// rawData manipulation
       let rawData = route.raw_data;
+			let rawArr = rawData.split(' - ');
+			let newArr = [];
+			let rawNew = [];
+
+			while(rawArr.length > 0) {
+				if(deviceWidth > 320) {
+					newArr.push(rawArr.splice(0, 7));
+				} else {
+					newArr.push(rawArr.splice(0, 6));
+				}
+			}
+
+			newArr.map((item) => {
+				let temp = item.join(' - ');
+				rawNew.push(temp);
+			});
+
+			let rawPrint = rawNew.map((item, index) => {
+				return (
+					<Text key={index} style={styles.routeRawData}>{item}</Text>
+				);
+			});
 
 			return (
 				<View key={index} style={styles.routeBox}>
 					<Text style={styles.routeDestination}> {destinationName} </Text>
 					<Text style={styles.routeTime}> {isRing ? 'Ring' : (timeRemaining == 'Done For Today!' ? 'Done For Today!' : <Timer seconds={timeRemaining} nextOne={nextOne}/>)} </Text>
-					<Text style={styles.routeRawData}> {rawData} </Text>
+					<View style={styles.routeRawContainer}>{rawPrint}</View>
 					<Text style={styles.routeNextOne}> {nextOne == 'Done!' ? ' ' : 'Next One: '+nextOne} </Text>
 				</View>
 			)
@@ -136,10 +164,8 @@ const styles = StyleSheet.create({
   routeBox: {
   	margin: 10,
   	padding: 15,
-
   	justifyContent: 'center',
   	alignItems: 'center',
-
   	backgroundColor: '#F6F6F6',
   	borderWidth: 2,
     borderRadius: 2,
@@ -159,15 +185,16 @@ const styles = StyleSheet.create({
   	color: '#D50000',
   	marginBottom: 5
   },
+	routeRawContainer: {
+		marginTop: 15,
+		marginBottom: 15,
+		justifyContent: 'center',
+  	alignItems: 'center'
+	},
   routeRawData: {
-    paddingLeft: 10,
-    paddingRight: 10,
-  	textAlign: 'center',
-    fontSize: 12,
-    marginTop: 15,
-    marginBottom: 15,
+    fontSize: 11,
     color: '#424242',
-    lineHeight: 14
+		lineHeight: 15
   },
   routeNextOne: {
   	fontSize: 12,

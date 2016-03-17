@@ -1299,7 +1299,8 @@ tintColor:'#fff',
 style:styles.container,
 initialRoute:{
 title:'Bilgi Shuttle',
-component:_List2.default}}));}}]);return BilgiShuttle;}(_reactNative.Component);
+component:_List2.default,
+backButtonTitle:'Back'}}));}}]);return BilgiShuttle;}(_reactNative.Component);
 
 
 
@@ -59437,12 +59438,10 @@ __d('BilgiShuttle/App/List.js',function(global, require, module, exports) {  Obj
 
 
 
-
 var deviceWidth=_Dimensions2.default.get('window').width;
 
 
-
-var baseURL='http://bilgishuttle.herokuapp.com';
+var baseURL='http://api.bilgishuttle.com';
 
 
 var dbVersion_KEY='@BilgiShutte:dbVersion';
@@ -59481,7 +59480,6 @@ console.log('Current Database: ',JSON.parse(value));});
 
 
 
-
 console.log('There is no DB!!! Getting it...');
 
 
@@ -59494,7 +59492,6 @@ _this2.updateData();}else
 console.log('Current database version: ',value);
 _reactNative.AsyncStorage.getItem(data_KEY).then(function(value){
 console.log('Current Data: ',JSON.parse(value));});
-
 
 
 
@@ -59524,7 +59521,7 @@ _this3.setState({data:{nodes:readData.nodes,routes:readData.routes},loaded:true}
 
 
 catch(function(error){
-_reactNative.AlertIOS.alert('Warning!','You have no internet connection, cached DB will be used to display data!');
+_reactNative.AlertIOS.alert('Warning!','You have no internet connection, cached database will be used to display data!');
 _reactNative.AsyncStorage.getItem(data_KEY).then(function(value){
 var readData=JSON.parse(value);
 _this3.setState({data:{nodes:readData.nodes,routes:readData.routes},loaded:true});});}).
@@ -59541,7 +59538,6 @@ _this4.setState({dbVersion:res.database_version});
 _reactNative.AsyncStorage.setItem(dbVersion_KEY,_this4.state.dbVersion.version_number.toString());
 _reactNative.AsyncStorage.getItem(dbVersion_KEY).then(function(value){
 console.log('Database updated to version: ',value);});}).
-
 
 
 catch(function(error){
@@ -59666,7 +59662,7 @@ flex:1,
 height:250,
 backgroundColor:'black'}});
 });
-__d('BilgiShuttle/App/Detail.js',function(global, require, module, exports) {  Object.defineProperty(exports,"__esModule",{value:true});var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var _Timer=require('BilgiShuttle/App/Utils/Timer.js');var _Timer2=babelHelpers.interopRequireDefault(_Timer);var _List=require('BilgiShuttle/App/List.js');var _List2=babelHelpers.interopRequireDefault(_List);var 
+__d('BilgiShuttle/App/Detail.js',function(global, require, module, exports) {  Object.defineProperty(exports,"__esModule",{value:true});var _reactNative=require('react-native/Libraries/react-native/react-native.js');var _reactNative2=babelHelpers.interopRequireDefault(_reactNative);var _Timer=require('BilgiShuttle/App/Utils/Timer.js');var _Timer2=babelHelpers.interopRequireDefault(_Timer);var _List=require('BilgiShuttle/App/List.js');var _List2=babelHelpers.interopRequireDefault(_List);var _Dimensions=require('Dimensions');var _Dimensions2=babelHelpers.interopRequireDefault(_Dimensions);
 
 
 
@@ -59677,6 +59673,10 @@ __d('BilgiShuttle/App/Detail.js',function(global, require, module, exports) {  O
 
 
 
+
+
+
+var deviceWidth=_Dimensions2.default.get('window').width;var 
 
 Detail=function(_React$Component){babelHelpers.inherits(Detail,_React$Component);
 function Detail(props){babelHelpers.classCallCheck(this,Detail);var _this=babelHelpers.possibleConstructorReturn(this,Object.getPrototypeOf(Detail).call(this,
@@ -59772,13 +59772,37 @@ var nextValues=_this2.getNextValues(start,destination);
 var timeRemaining=nextValues.in_secs;
 var isRing=nextValues.ring;
 var nextOne=nextValues.next_next_one;
+
+
 var rawData=route.raw_data;
+var rawArr=rawData.split(' - ');
+var newArr=[];
+var rawNew=[];
+
+while(rawArr.length>0){
+if(deviceWidth>320){
+newArr.push(rawArr.splice(0,7));}else 
+{
+newArr.push(rawArr.splice(0,6));}}
+
+
+
+newArr.map(function(item){
+var temp=item.join(' - ');
+rawNew.push(temp);});
+
+
+var rawPrint=rawNew.map(function(item,index){
+return (
+_reactNative2.default.createElement(_reactNative.Text,{key:index,style:styles.routeRawData},item));});
+
+
 
 return (
 _reactNative2.default.createElement(_reactNative.View,{key:index,style:styles.routeBox},
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.routeDestination},' ',destinationName,' '),
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.routeTime},' ',isRing?'Ring':timeRemaining=='Done For Today!'?'Done For Today!':_reactNative2.default.createElement(_Timer2.default,{seconds:timeRemaining,nextOne:nextOne}),' '),
-_reactNative2.default.createElement(_reactNative.Text,{style:styles.routeRawData},' ',rawData,' '),
+_reactNative2.default.createElement(_reactNative.View,{style:styles.routeRawContainer},rawPrint),
 _reactNative2.default.createElement(_reactNative.Text,{style:styles.routeNextOne},' ',nextOne=='Done!'?' ':'Next One: '+nextOne,' ')));});
 
 
@@ -59804,10 +59828,8 @@ marginTop:5},
 routeBox:{
 margin:10,
 padding:15,
-
 justifyContent:'center',
 alignItems:'center',
-
 backgroundColor:'#F6F6F6',
 borderWidth:2,
 borderRadius:2,
@@ -59827,15 +59849,16 @@ fontWeight:'600',
 color:'#D50000',
 marginBottom:5},
 
-routeRawData:{
-paddingLeft:10,
-paddingRight:10,
-textAlign:'center',
-fontSize:12,
+routeRawContainer:{
 marginTop:15,
 marginBottom:15,
+justifyContent:'center',
+alignItems:'center'},
+
+routeRawData:{
+fontSize:11,
 color:'#424242',
-lineHeight:14},
+lineHeight:15},
 
 routeNextOne:{
 fontSize:12,
@@ -59849,7 +59872,6 @@ getInitialState:function(){
 return {
 timeRemaining:this.props.seconds,
 timeDisplay:'Loading',
-
 sleepTime:'',
 wakeUpTime:''};},
 
@@ -59894,51 +59916,11 @@ this.setState({timeDisplay:'Ring'});}},
 
 
 componentDidMount:function(){
-
 this.interval=setInterval(this.tick,1000);},
 
 
-
-
 componentWillUnmount:function(){
-
 clearInterval(this.interval);},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 render:function(){

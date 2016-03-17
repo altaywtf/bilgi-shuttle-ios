@@ -97,7 +97,7 @@ export default class List extends React.Component {
         }
       })
       .catch((error) => {
-        AlertIOS.alert('Warning!', 'You have no internet connection, cached DB will be used to display data!');
+        AlertIOS.alert('Warning!', 'You have no internet connection, cached database will be used to display data!');
         AsyncStorage.getItem(data_KEY).then((value) => {
             const readData = JSON.parse(value);
             this.setState({data: {nodes: readData.nodes, routes: readData.routes}, loaded: true});

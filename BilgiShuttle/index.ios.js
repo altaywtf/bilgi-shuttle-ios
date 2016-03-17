@@ -21,6 +21,7 @@ class BilgiShuttle extends Component {
         initialRoute={{
           title: 'Bilgi Shuttle',
           component: List,
+          backButtonTitle: 'Back',
         }}/>
     );
   }
